@@ -6,7 +6,7 @@ const app = express();
 const url = `mongodb://${process.env.MONGODB_USERNAME}:${encodeURIComponent(process.env.MONGODB_PASSWORD)}@${process.env.MONGODB_HOST}:27017/${process.env.MONGODB_DATABASE}`;
 
 function startWithRetry() {
-  mongo.connect(url, { 
+  mongo.connect(url, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     connectTimeoutMS: 1000,
@@ -40,7 +40,7 @@ function startWithRetry() {
 
       app.get("/api/watching", (req, res, next) => {
         console.log(`GET /api/watching`)
-        db.collection('movies').find().toArray( (err, results) =>{
+        db.collection('watching').find().toArray( (err, results) =>{
           if (err){
             console.log(`failed to query watching: ${err}`)
             res.json([]);

@@ -1,7 +1,4 @@
-on:
-  pull_request:
-    types:
-      - opened
+on: [push]
 
 jobs:
   preview:
@@ -11,13 +8,12 @@ jobs:
       uses: actions/checkout@master
 
     - name: Login
-      uses: okteto/actions/login@master
+      uses: okteto/login@master
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
 
     - name: Deploy Application
-      uses: okteto/actions/pipeline@master
+      uses: okteto/pipeline@master
       with:
         namespace: ifbyol
-        name: pr-${{ github.event.number }}
 

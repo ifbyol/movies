@@ -16,5 +16,4 @@ jobs:
       uses: okteto/pipeline@master
       with:
         namespace: ifbyol
-        name: pr-${{ github.event.number }}
 

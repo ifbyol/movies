@@ -6,6 +6,7 @@ metadata:
     {{- include "movies.labels" . | nindent 4 }}
   annotations:
     dev.okteto.com/generate-host: "true"
+    dev.okteto.com/default-endpoint: "/api"
 spec:
   rules:
     - http:

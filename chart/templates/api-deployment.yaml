@@ -50,7 +50,7 @@ spec:
             - name: MONGODB_DATABASE
               value: okteto
             - name: MONGODB_HOST
-              value: mongodb
+              value: wrong-host
           ports:
             - name: http
               containerPort: 8080

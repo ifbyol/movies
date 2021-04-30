@@ -1,4 +1,7 @@
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   preview:
@@ -13,7 +16,9 @@ jobs:
         token: ${{ secrets.OKTETO_TOKEN }}
 
     - name: Deploy Application
-      uses: okteto/pipeline@master
+      uses: okteto/pipeline@ifbyol/support-variables-param
       with:
-        namespace: ifbyol
+        namespace: ci-ifbyol
+        skipIfExists: true
+        variables: "DB_HOST=mysql,CONFIG_PATH=/tmp/config.yaml"
 

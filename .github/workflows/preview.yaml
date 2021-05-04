@@ -13,7 +13,7 @@ jobs:
         token: ${{ secrets.OKTETO_TOKEN }}
 
     - name: Deploy Application
-      uses: okteto/pipeline@master
+      uses: okteto/pipeline@ifbyol/update-okteto-cli-1-12-9
       with:
         namespace: ifbyol
 

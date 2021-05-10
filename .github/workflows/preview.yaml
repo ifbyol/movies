@@ -19,5 +19,4 @@ jobs:
       uses: okteto/pipeline@ifbyol/support-variables-param
       with:
         namespace: ci-ifbyol
-        variables: "DB_HOST=mysql,CONFIG_PATH=/tmp/config.yaml"
 

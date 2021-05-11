@@ -20,4 +20,4 @@ jobs:
       with:
         namespace: ci-ifbyol
         skipIfExists: false
-        variables: 'DB_HOST=mysql'
+        variables: 'DB_HOST=mysql,NEW_VARIABLE=test'

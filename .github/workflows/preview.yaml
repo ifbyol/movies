@@ -19,4 +19,5 @@ jobs:
       uses: okteto/pipeline@ifbyol/support-variables-param
       with:
         namespace: ci-ifbyol
-
+        skipIfExists: false
+        variables: 'DB_HOST=mysql'

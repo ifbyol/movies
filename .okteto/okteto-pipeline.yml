@@ -6,6 +6,7 @@ deploy:
 destroy:
   - printenv
   - sleep 1m
+  - exit 1
 devs:
   - api/okteto.yml
   - frontend/okteto.yml

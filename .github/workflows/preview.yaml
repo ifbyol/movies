@@ -8,7 +8,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Login
-      uses: okteto/login@debug
+      uses: okteto/login@master
       with:
         token: ${{ secrets.OKTETO_DEV_TOKEN }}
         url: https://okteto.nacho.dev.okteto.net/

@@ -3,15 +3,12 @@ on: [push]
 jobs:
   preview:
     runs-on: self-hosted
-    container:
-      image: ubuntu:20.04
-      options: --user 1002
     steps:
     - name: checkout
       uses: actions/checkout@master
 
     - name: Login
-      uses: okteto/login@master
+      uses: okteto/login@debug
       with:
         token: ${{ secrets.OKTETO_DEV_TOKEN }}
         url: https://okteto.nacho.dev.okteto.net/

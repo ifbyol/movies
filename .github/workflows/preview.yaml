@@ -15,5 +15,5 @@ jobs:
     - name: Deploy Application
       uses: okteto/pipeline@master
       with:
-        namespace: nacho
+        namespace: ifbyol
 

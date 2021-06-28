@@ -10,8 +10,7 @@ jobs:
     - name: Login
       uses: okteto/login@master
       with:
-        token: ${{ secrets.OKTETO_DEV_TOKEN }}
-        url: https://okteto.nacho.dev.okteto.net/
+        token: ${{ secrets.OKTETO_TOKEN }}
 
     - name: Deploy Application
       uses: okteto/pipeline@master

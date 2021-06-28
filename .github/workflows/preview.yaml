@@ -3,6 +3,9 @@ on: [push]
 jobs:
   preview:
     runs-on: self-hosted
+    container:
+      image: ubuntu:20.04
+      options: --user 1002
     steps:
     - name: checkout
       uses: actions/checkout@master

@@ -3,6 +3,7 @@ icon: https://apps.okteto.com/movies/icon.png
 build:
   frontend:
     context: frontend
+    export_cache: okteto.dev/image-cache:dev
   frontend-dev:
     context: frontend
     target: dev
@@ -12,6 +13,9 @@ build:
     context: rent
   api:
     context: api
+    image: okteto.dev/image-cache:dev
+    cache_from:
+      - okteto.dev/image-cache:dev
   api-dev:
     context: api
     target: dev

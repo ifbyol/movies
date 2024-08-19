@@ -46,23 +46,6 @@ public class RentController {
             return null;
         });
 
-
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                logger.info("Message [{}] delivered with offset {}",
-                        catalogID,
-                        result.getRecordMetadata().offset());
-            }
-
-            @Override
-            public void onFailure(Throwable ex) {
-                logger.warn("Unable to deliver message [{}]. {}",
-                        catalogID,
-                        ex.getMessage());
-            }
-        });
-
         return new LinkedList<>();
     }
 

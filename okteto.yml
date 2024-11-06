@@ -22,6 +22,8 @@ build:
     target: dev
 
 deploy:
+  - name: Sleep simulating node creation
+    command: sleep 10m
   - name: Deploy PostgreSQL
     command: helm upgrade --install postgresql oci://registry-1.docker.io/bitnamicharts/postgresql -f postgresql/values.yml --version 13.4.4
   - name: Deploy Kafka

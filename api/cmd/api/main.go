@@ -4,17 +4,18 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"log"
 
+	"github.com/ifbyol/go-header-propagator"
 	"github.com/okteto/movies/pkg/database"
 
 	"fmt"
 
-	_ "github.com/lib/pq"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
@@ -49,15 +50,15 @@ type Movie struct {
 }
 
 type User struct {
-	Userid int
+	Userid    int
 	Firstname string
-	Lastname string
-	Phone string
-	City string
-	State string
-	Zip string
-	Age int
-	Gender string
+	Lastname  string
+	Phone     string
+	City      string
+	State     string
+	Zip       string
+	Age       int
+	Gender    string
 }
 
 func loadData() {
@@ -97,15 +98,34 @@ func loadData() {
 func handleRequests() {
 	muxRouter := mux.NewRouter().StrictSlash(true)
 
-	muxRouter.HandleFunc("/rentals", rentals)
+	propagator := goheaderpropagator.Propagator{
+		Header: "baggage.okteto-divert",
+		Base:   http.DefaultTransport,
+	}
+	muxRouter.Use(propagator.Middleware)
+
+	h := rentalsHandler{
+		propagator: &propagator,
+	}
+
+	muxRouter.HandleFunc("/rentals", h.rentals)
 	muxRouter.HandleFunc("/users", allUsers)
 	muxRouter.HandleFunc("/users/{userid}", singleUser)
 
 	log.Fatal(http.ListenAndServe(":8080", muxRouter))
 }
 
-func rentals(w http.ResponseWriter, r *http.Request) {
+type rentalsHandler struct {
+	propagator *goheaderpropagator.Propagator
+}
+
+func (rh *rentalsHandler) rentals(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	fmt.Println("Received request...")
+	a := r.Header.Get("okteto.baggage-divert")
+	if a != "" {
+		fmt.Println("Received request with header", a)
+	}
 
 	rows, err := db.Query("SELECT * FROM rentals")
 	if err != nil {
@@ -130,7 +150,11 @@ func rentals(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
-	resp, err := http.Get("http://catalog:8080/catalog")
+	c := http.Client{
+		Transport: rh.propagator,
+	}
+	req, _ := http.NewRequestWithContext(ctx, "GET", "http://catalog:8080/catalog", nil)
+	resp, err := c.Do(req)
 	if err != nil {
 		fmt.Println("error listing catalog", err)
 		w.WriteHeader(500)
@@ -169,6 +193,10 @@ func rentals(w http.ResponseWriter, r *http.Request) {
 
 func allUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received request...")
+
+	for header, value := range r.Header {
+		fmt.Println(fmt.Sprintf("%s: %s", header, value))
+	}
 
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {

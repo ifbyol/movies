@@ -3,3 +3,4 @@ catalog/node_modules
 bin
 rent/.idea
 rent/target
+.idea/

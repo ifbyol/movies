@@ -1,4 +1,16 @@
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
+github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
+github.com/ifbyol/go-header-propagator v0.0.0-20250328161747-428c050cd24e h1:7f0DCJyFIYeSirJSr9N30pfwUTVMNdbMU44oId1HezM=
+github.com/ifbyol/go-header-propagator v0.0.0-20250328161747-428c050cd24e/go.mod h1:OBQg7YTqJXvkhr6btN97Z31x34YsdqhxyKOj1jH8ttg=
+github.com/ifbyol/go-header-propagator v0.0.0-20250328170044-75f7e36061df h1:xzQZkp/Qol6AofoZm8zKHnNzFmcSZGcNuxw54+mQBS4=
+github.com/ifbyol/go-header-propagator v0.0.0-20250328170044-75f7e36061df/go.mod h1:OBQg7YTqJXvkhr6btN97Z31x34YsdqhxyKOj1jH8ttg=
+github.com/ifbyol/go-header-propagator v0.0.0-20250330100650-44c29003f976 h1:Gi1++bRFlcW1dQ4tTkvivYaKhyyGRLv0y7gjtwcLHjo=
+github.com/ifbyol/go-header-propagator v0.0.0-20250330100650-44c29003f976/go.mod h1:OBQg7YTqJXvkhr6btN97Z31x34YsdqhxyKOj1jH8ttg=
+github.com/ifbyol/go-header-propagator v0.0.0-20250330101140-937328785a57 h1:LdFet/zE0LuzFlsqMb/OTQCtFUIFJW20LWXXY2JsnbA=
+github.com/ifbyol/go-header-propagator v0.0.0-20250330101140-937328785a57/go.mod h1:OBQg7YTqJXvkhr6btN97Z31x34YsdqhxyKOj1jH8ttg=
 github.com/lib/pq v1.10.5 h1:J+gdV2cUmX7ZqL2B0lFcW0m+egaHC2V3lpO8nWxyYiQ=
 github.com/lib/pq v1.10.5/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/lib/pq v1.10.9 h1:YXG7RB+JIjhP29X+OtkiDnYaXQwpS4JEWq7dtCCRUEw=
+github.com/lib/pq v1.10.9/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=

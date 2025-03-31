@@ -41,7 +41,7 @@ dev:
     sync:
       - catalog:/src
     forward:
-      - 9229:9229
+      - 9229:8080
   rent:
     command: mvn spring-boot:run
     sync:
@@ -52,7 +52,7 @@ dev:
       - 5005:5005
       - 5432:postgresql:5432
   api:
-    image: okteto/golang:1.22
+    image: okteto/golang:1.23
     command: bash
     securityContext:
       capabilities:

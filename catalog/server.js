@@ -1,4 +1,4 @@
-import got from "got";
+import http from "http";
 import hpropagate from "hpropagate";
 import express from "express"
 import mongodb from "mongodb";
@@ -18,14 +18,29 @@ const oktetoDivertHeader = "baggage.okteto-divert";
 const url = `mongodb://${process.env.MONGODB_USERNAME}:${encodeURIComponent(process.env.MONGODB_PASSWORD)}@${process.env.MONGODB_HOST}:27017/${process.env.MONGODB_DATABASE}`;
 
 async function callAPI() {
-  const url = `http://api:8080/users`;
+  const apiUrl = `http://api:8080/users`;
   console.log(`calling api service`);
 
-  return await got(url).text();
+  return new Promise((resolve, reject) => {
+    http.get(apiUrl, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        resolve(data);
+      });
+    }).on('error', (err) => {
+      console.error(`Error calling API: ${err.message}`);
+      reject(err);
+    });
+  });
 }
 
 function startWithRetry() {
-  mongo.connect(url, { 
+  mongo.connect(url, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     connectTimeoutMS: 1000,

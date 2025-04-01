@@ -21,3 +21,8 @@ spec:
             - /usr/local/bin/worker
           args:
             - --groupID={{ .Values.kafka.groupID }}
+          env:
+            - name: KAFKA_GROUP_ID
+              value: {{ .Values.kafka.groupID }}
+            - name: KAFKA_TOPIC_NAME
+              value: rentals

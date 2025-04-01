@@ -1,2 +1,4 @@
 replicaCount: 1
 image: ""
+kafka:
+  groupID: "worker-group"

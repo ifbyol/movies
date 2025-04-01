@@ -15,8 +15,9 @@ spec:
         app: worker
     spec:
       containers:
-      - image: {{ .Values.image }}
-        name: worker
-        command:
-          - /usr/local/bin/worker
-
+        - image: {{ .Values.image }}
+          name: worker
+          command:
+            - /usr/local/bin/worker
+          args:
+            - --groupID={{ .Values.kafka.groupID }}

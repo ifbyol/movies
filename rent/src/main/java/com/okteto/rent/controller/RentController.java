@@ -1,6 +1,7 @@
 package com.okteto.rent.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Collections;
 @RestController
 public class RentController {
     private static final String KAFKA_TOPIC = "rentals";
+    private static final String OKTETO_BAGGAGE_HEADER = "baggage.okteto-divert";
 
     private final Logger logger = LoggerFactory.getLogger(RentController.class);
 
@@ -31,13 +33,21 @@ public class RentController {
     }
     
     @PostMapping(path= "/rent", consumes = "application/json", produces = "application/json")
-    List<String> rent(@RequestBody Rent rentInput) {
+    List<String> rent(@RequestBody Rent rentInput, @org.springframework.web.bind.annotation.RequestHeader Map<String, String> headers) {
         String catalogID = rentInput.getMovieID();
         String price = rentInput.getPrice();
+        String divert = headers.getOrDefault(OKTETO_BAGGAGE_HEADER, "");
+
+        ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC, catalogID, price);
+        record.headers().add("source", ("my-session-" + System.currentTimeMillis()).getBytes());
+        record.headers().add("author", "ifbyol".getBytes());
+        if (!divert.isEmpty()) {
+            record.headers().add(OKTETO_BAGGAGE_HEADER, divert.getBytes());
+        }
 
         logger.info("Rent [{},{}] received", catalogID, price);
 
-        kafkaTemplate.send(KAFKA_TOPIC, catalogID, price)
+        kafkaTemplate.send(record)
         .thenAccept(result -> logger.info("Message [{}] delivered with offset {}",
                         catalogID,
                         result.getRecordMetadata().offset()))

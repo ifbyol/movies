@@ -34,6 +34,7 @@ public class RentController {
     
     @PostMapping(path= "/rent", consumes = "application/json", produces = "application/json")
     List<String> rent(@RequestBody Rent rentInput, @org.springframework.web.bind.annotation.RequestHeader Map<String, String> headers) {
+        logger.info("RentController::rent");
         String catalogID = rentInput.getMovieID();
         String price = rentInput.getPrice();
         String divert = headers.getOrDefault(OKTETO_BAGGAGE_HEADER, "");
@@ -42,6 +43,7 @@ public class RentController {
         record.headers().add("source", ("my-session-" + System.currentTimeMillis()).getBytes());
         record.headers().add("author", "ifbyol".getBytes());
         if (!divert.isEmpty()) {
+            logger.info("received a divert header " + divert);
             record.headers().add(OKTETO_BAGGAGE_HEADER, divert.getBytes());
         }
 

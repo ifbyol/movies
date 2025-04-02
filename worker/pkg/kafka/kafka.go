@@ -3,12 +3,15 @@ package kafka
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 )
+
+const groupIDEnvVar = "KAFKA_GROUP_ID"
 
 var (
 	brokerList = kingpin.Flag("brokerList", "List of brokers to connect").Default("kafka:9092").Strings()
@@ -52,7 +55,11 @@ func GetConsumerGroup() (sarama.ConsumerGroup, error) {
 	config.Consumer.Offsets.Retry.Max = 5
 
 	brokers := *brokerList
-	groupID := *groupID
+	gID := os.Getenv(groupIDEnvVar)
+	if gID == "" {
+		gID = *groupID
+	}
+	groupID := gID
 
 	fmt.Printf("Waiting for kafka consumer group with groupID: %s...\n", groupID)
 

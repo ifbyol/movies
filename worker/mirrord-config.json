@@ -1,0 +1,14 @@
+{
+  "operator": true,
+  "target": "deployment/worker/container/worker",
+  "feature": {
+    "split_queues": {
+      "rentals-topic": {
+        "queue_type": "Kafka",
+        "message_filter": {
+          "baggage.okteto-divert": "^ifbyol$"
+        }
+      }
+    }
+  }
+}

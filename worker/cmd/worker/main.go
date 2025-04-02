@@ -15,10 +15,12 @@ import (
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	"github.com/okteto/movies/pkg/database"
 	"github.com/okteto/movies/pkg/kafka"
 )
+
+const topicEnvVar = "KAFKA_TOPIC_NAME"
 
 var (
 	topic             = kingpin.Flag("topic", "Topic name").Default("rentals").String()
@@ -27,6 +29,11 @@ var (
 
 func main() {
 	kingpin.Parse()
+
+	topicToConsume := os.Getenv(topicEnvVar)
+	if topicToConsume == "" {
+		topicToConsume = *topic
+	}
 
 	db := database.Open()
 	defer db.Close()
@@ -97,7 +104,7 @@ func main() {
 	signal.Notify(signals, os.Interrupt)
 
 	// Start consuming in a goroutine
-	topics := []string{*topic}
+	topics := []string{topicToConsume}
 
 	wg.Add(1)
 	go func() {
@@ -110,6 +117,7 @@ func main() {
 			// Check if context was cancelled, signaling that the consumer should stop
 			if ctx.Err() != nil {
 				log.Println("Context cancelled, stopping consumer")
+				handler.Ready <- false
 				return
 			}
 			// Reset the ready channel for the next consume session

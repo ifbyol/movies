@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: rent
+      annotations:
+        sidecar.signadot.com/inject: "true"
     spec:
       containers:
       - image: {{ .Values.image }}

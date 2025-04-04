@@ -16,6 +16,8 @@ spec:
       labels:
         app.kubernetes.io/name: catalog
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        sidecar.signadot.com/inject: "true"
     spec:
       terminationGracePeriodSeconds: 0
       initContainers:

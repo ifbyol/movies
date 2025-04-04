@@ -6,3 +6,5 @@ auth:
 primary:
   persistence:
     size: 2Gi
+  podAnnotations:
+    sidecar.signadot.com/inject: "true"

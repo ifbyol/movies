@@ -1,7 +1,5 @@
 controller:
   replicaCount: 1
-  podAnnotations:
-    sidecar.signadot.com/inject: "true"
 
 listeners:
   client:
@@ -13,8 +11,6 @@ persistence:
 zookeeper:
   persistence:
     size: 1Gi
-  podAnnotations:
-    sidecar.signadot.com/inject: "true"
 
 extraConfig: |
   offsets.topic.replication.factor=1

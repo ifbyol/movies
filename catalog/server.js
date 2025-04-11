@@ -28,6 +28,18 @@ function startWithRetry() {
 
       app.get("/catalog", (req, res, next) => {
         console.log(`GET /catalog`)
+        
+        // Log all headers to verify baggage header propagation
+        console.log("Request headers:");
+        console.log(JSON.stringify(req.headers, null, 2));
+        
+        // Specifically log the baggage header if it exists
+        if (req.headers.baggage) {
+          console.log(`Received baggage header: ${req.headers.baggage}`);
+        } else {
+          console.log("No baggage header received");
+        }
+        
         db.collection('catalog').find().toArray( (err, results) =>{
           if (err){
             console.log(`failed to query movies: ${err}`)

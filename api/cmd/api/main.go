@@ -3,18 +3,23 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"io/ioutil"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"log"
 
 	"github.com/okteto/movies/pkg/database"
 
 	"fmt"
 
-	_ "github.com/lib/pq"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/baggage"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 var db *sql.DB
@@ -49,15 +54,15 @@ type Movie struct {
 }
 
 type User struct {
-	Userid int
+	Userid    int
 	Firstname string
-	Lastname string
-	Phone string
-	City string
-	State string
-	Zip string
-	Age int
-	Gender string
+	Lastname  string
+	Phone     string
+	City      string
+	State     string
+	Zip       string
+	Age       int
+	Gender    string
 }
 
 func loadData() {
@@ -95,17 +100,40 @@ func loadData() {
 }
 
 func handleRequests() {
+	// Set up OpenTelemetry propagator for baggage
+	propagator := propagation.NewCompositeTextMapPropagator(
+		propagation.Baggage{},
+	)
+	otel.SetTextMapPropagator(propagator)
+
+	// Create a new router with OpenTelemetry instrumentation
 	muxRouter := mux.NewRouter().StrictSlash(true)
+
+	// Add OpenTelemetry middleware to the router
+	muxRouter.Use(otelmux.Middleware("api-service"))
 
 	muxRouter.HandleFunc("/rentals", rentals)
 	muxRouter.HandleFunc("/users", allUsers)
 	muxRouter.HandleFunc("/users/{userid}", singleUser)
 
+	// Create a custom HTTP client with OpenTelemetry instrumentation for outgoing requests
+	http.DefaultClient = &http.Client{
+		Transport: otelhttp.NewTransport(http.DefaultTransport),
+	}
+
+	// Log when the server starts
+	fmt.Println("Server running on port 8080 with OpenTelemetry baggage propagation enabled")
 	log.Fatal(http.ListenAndServe(":8080", muxRouter))
 }
 
 func rentals(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received request...")
+
+	// Log baggage from the request context
+	b := baggage.FromContext(r.Context())
+	if len(b.Members()) > 0 {
+		fmt.Printf("Received request with baggage: %v\n", b)
+	}
 
 	rows, err := db.Query("SELECT * FROM rentals")
 	if err != nil {
@@ -130,14 +158,24 @@ func rentals(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
-	resp, err := http.Get("http://catalog:8080/catalog")
+	// Create a new request with the original request's context
+	// OpenTelemetry will automatically propagate the baggage
+	req, err := http.NewRequestWithContext(r.Context(), "GET", "http://catalog:8080/catalog", nil)
+	if err != nil {
+		fmt.Println("error creating catalog request", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	fmt.Println("Making request to catalog service with baggage propagation")
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("error listing catalog", err)
 		w.WriteHeader(500)
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("error reading catalog", err)
 		w.WriteHeader(500)

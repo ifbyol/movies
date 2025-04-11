@@ -4,19 +4,19 @@
  */
 export const setupBaggageCapture = () => {
   // Function to extract headers from the current request
-  const captureHeaders = () => {
-    // Try to get the baggage header from the server-side rendered page
-    const headerElements = document.getElementsByTagName('meta');
-    for (let i = 0; i < headerElements.length; i++) {
-      const element = headerElements[i];
-      if (element.getAttribute('name') === 'baggage') {
-        const baggageValue = element.getAttribute('content');
-        if (baggageValue) {
-          // Store the baggage header in a cookie
-          document.cookie = `baggage=${encodeURIComponent(baggageValue)}; path=/`;
-          return;
-        }
+  const captureHeaders = async () => {
+    try {
+      // Make a HEAD request to the current page to get the X-Baggage header
+      const response = await fetch(window.location.href, { method: 'HEAD' });
+      const xBaggage = response.headers.get('X-Baggage');
+
+      if (xBaggage) {
+        // Store the baggage header in a cookie
+        document.cookie = `baggage=${encodeURIComponent(xBaggage)}; path=/`;
+        console.log('Captured baggage header:', xBaggage);
       }
+    } catch (error) {
+      console.error('Error capturing baggage header:', error);
     }
   };
 
@@ -33,7 +33,7 @@ export const setupBaggageCapture = () => {
     // Get baggage header from cookie
     const cookies = document.cookie.split(';');
     let baggageHeader = '';
-    
+
     for (const cookie of cookies) {
       const [name, value] = cookie.trim().split('=');
       if (name === 'baggage') {
@@ -44,7 +44,7 @@ export const setupBaggageCapture = () => {
 
     // Prepare headers
     const headers = options.headers || {};
-    
+
     // Add baggage header if it exists
     if (baggageHeader) {
       headers.baggage = baggageHeader;

@@ -1,0 +1,23 @@
+build:
+  api:
+    context: api
+
+deploy:
+  commands:
+    - name: Deploy API
+      command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE} --set load=false
+  divert:
+    namespace: ifbyol-staging
+
+dev:
+  api:
+    image: okteto/golang:1.22
+    command: bash
+    securityContext:
+      capabilities:
+        add:
+          - SYS_PTRACE
+    sync:
+      - api:/usr/src/app
+    forward:
+      - 2346:2345

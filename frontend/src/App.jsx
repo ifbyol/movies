@@ -45,6 +45,7 @@ class App extends Component {
   }
 
   handleRent = async (item) => {
+    // Using the global fetch which is already overridden by our middleware
     await fetch('/rent', {
       method: 'POST',
       headers: {
@@ -59,6 +60,7 @@ class App extends Component {
   }
 
   refreshData = async () => {
+    // Using the global fetch which is already overridden by our middleware
     const catalogPromise = fetch('/catalog')
       .then(res => res.json())
       .then(result => compact(result));

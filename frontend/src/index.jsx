@@ -4,6 +4,10 @@ import { render } from 'react-dom';
 
 import App from './App';
 import './index.css';
+import { setupBaggageCapture } from './utils/baggageMiddleware';
+
+// Setup baggage header capture and propagation
+setupBaggageCapture();
 
 if (module.hot) {
   module.hot.accept();

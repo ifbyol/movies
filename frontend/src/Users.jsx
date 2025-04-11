@@ -8,6 +8,7 @@ const Users = () => {
 
   const fetchUsers = async () => {
     setLoading(true);
+    // Using the global fetch which is already overridden by our middleware
     const reqUsers = await fetch('/users');
     const usersResult = await reqUsers.json();
     setUsers(usersResult);

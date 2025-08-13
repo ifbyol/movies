@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "movies.labels" . | nindent 4 }}
   annotations:
-    dev.okteto.com/generate-host: "movies"
+    dev.okteto.com/endpoints: "https://movies-ifbyol-okteto-admin.dev.okteto.net/foo,https://movies-ifbyol-okteto-admin.dev.okteto.net/bar"
 spec:
   rules:
     - http:
